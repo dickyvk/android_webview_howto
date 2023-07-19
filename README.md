@@ -2,9 +2,8 @@ HOW TO MAKE ANDROID WEBVIEW
 
 Create new android project
 
-
-
 Change AndroidManifest.xml into:
+```
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -38,10 +37,10 @@ Change AndroidManifest.xml into:
     </application>
 
 </manifest>
-
-
+```
 
 Create new Java Class in java > com.[APP_URL] > MainActivity:
+```
 package com.[APP_URL];
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -86,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
+```
 
 Create new Java Class in java > com.[APP_URL] > SplashActivity:
+```
 package com.[APP_URL];
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -114,10 +113,10 @@ public class SplashActivity extends AppCompatActivity {
         }, 1000);
     }
 }
-
-
+```
 
 Create new Layout Resource File in res > layout > activity_main.xml:
+```
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -131,12 +130,12 @@ Create new Layout Resource File in res > layout > activity_main.xml:
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>
-
-
+```
 
 Add logo in res > drawable > logo.png
 
 Create new Layout Resource File in res > layout > activity_splash.xml:
+```
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -157,12 +156,12 @@ Create new Layout Resource File in res > layout > activity_splash.xml:
         android:layout_marginBottom="150px"
         android:src="@drawable/logo" />
 </RelativeLayout>
-
-
+```
 
 Add new colors in res > values > colors.xml if you want
 
 Change your theme in res > values > themes > themes.xml:
+```
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.DislyteCalculator" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -182,8 +181,6 @@ Change your theme in res > values > themes > themes.xml:
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorOnPrimary</item>
     </style>
 </resources>
-
-
-
+```
 
 Right click res > drawable and choose New > Image Asset and then set your apps icon
