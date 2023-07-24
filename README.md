@@ -16,10 +16,9 @@ Change AndroidManifest.xml into:
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.[APP_NAME]"
-        tools:targetApi="31">
+        android:theme="@style/Theme.TwinTulipware"
+        tools:targetApi="31" >
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -33,63 +32,64 @@ Change AndroidManifest.xml into:
         <activity
             android:name=".MainActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
-
 </manifest>
 ```
 
 Create new Java Class in java > com.[APP_URL] > MainActivity:
 ```
-package com.[APP_URL];
+package com.twintulipware.shop;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.graphics.Bitmap;
+import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
-public class MainActivity extends AppCompatActivity {
-    private WebView mywebView;
+public class MainActivity extends Activity {
+
+    private WebView webView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mywebView=(WebView) findViewById(R.id.webview);
-        mywebView.setWebViewClient(new WebViewClient());
-        mywebView.loadUrl("[THE_URL_WHERE_YOUR_WEBVIEW_SHOULD_SHOW]");
-        WebSettings webSettings=mywebView.getSettings();
+
+        this.webView = (WebView) findViewById(R.id.webview);
+
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+
+        WebViewClientImpl webViewClient = new WebViewClientImpl(this);
+        webView.setWebViewClient(webViewClient);
+
+        webView.loadUrl("https://shop.twintulipware.co.id");
     }
-    public class mywebClient extends WebViewClient{
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon){
-            super.onPageStarted(view,url,favicon);
-        }
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view,String url){
-            view.loadUrl(url);
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && this.webView.canGoBack()) {
+            this.webView.goBack();
             return true;
         }
+
+        return super.onKeyDown(keyCode, event);
     }
-    @Override
-    public void onBackPressed(){
-        if(mywebView.canGoBack()) {
-            mywebView.goBack();
-        }
-        else{
-            super.onBackPressed();
-        }
-    }
+
 }
 ```
 
 Create new Java Class in java > com.[APP_URL] > SplashActivity:
 ```
-package com.[APP_URL];
+package com.twintulipware.shop;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -111,6 +111,46 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, 1000);
+    }
+}
+```
+
+Create new Java Class in java > com.[APP_URL] > WebViewClientImpl:
+```
+package com.twintulipware.shop;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+public class WebViewClientImpl extends WebViewClient {
+
+    private Activity activity = null;
+
+    public WebViewClientImpl(Activity activity) {
+        this.activity = activity;
+    }
+
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if(url.indexOf("twintulipware.co.id") > -1 ) return false;
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        activity.startActivity(intent);
+        return true;
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest request)
+    {
+        final Uri uri = request.getUrl();
+        return shouldOverrideUrlLoading(webView, uri.toString());
     }
 }
 ```
