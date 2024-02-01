@@ -92,6 +92,7 @@ public class MainActivity extends Activity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
+        webSettings.setUserAgentString("Mozilla/5.0 AppleWebKit/535.19 Chrome/56.0.0 Mobile Safari/535.19");
 
         WebViewClientImpl webViewClient = new WebViewClientImpl(this);
         webView.setWebViewClient(webViewClient);
@@ -256,6 +257,7 @@ public class WebViewClientImpl extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String url) {
         if(url.indexOf("twintulipware.co.id") > -1
+            || url.indexOf("supabase.co") > -1
             || url.indexOf("google.com") > -1)
         {
             return false;
