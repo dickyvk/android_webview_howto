@@ -255,7 +255,11 @@ public class WebViewClientImpl extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if(url.indexOf("twintulipware.co.id") > -1 ) return false;
+        if(url.indexOf("twintulipware.co.id") > -1
+            || url.indexOf("google.com") > -1)
+        {
+            return false;
+        }
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         activity.startActivity(intent);
