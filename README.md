@@ -13,7 +13,6 @@ Change AndroidManifest.xml into:
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="true" />
     <uses-feature android:name="android.hardware.camera.front" android:required="true" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.camera.level.full" android:required="true" />
     <uses-feature android:name="android.hardware.camera.capability.raw" android:required="true" />
     <uses-feature android:name="android.hardware.camera.any" android:required="true" />
@@ -55,6 +54,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.webkit.PermissionRequest;
@@ -63,18 +63,25 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.Manifest;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class MainActivity extends Activity {
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (hasCameraPermission() == false
-                || hasReadPermission() == false
-                || hasWritePermission() == false) {
+        if (!hasCameraPermission()
+                || !hasCoarseLocationPermission()
+                || !hasFineLocationPermission()
+                || !hasMediaPermission()
+                || !hasReadPermission()
+                || !hasWritePermission()
+                || !hasNotificationPermission()) {
             requestPermission();
         }
         super.onCreate(savedInstanceState);
@@ -136,8 +143,12 @@ public class MainActivity extends Activity {
 
     private static final String[] PERMISSION = new String[]{
             Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.POST_NOTIFICATIONS
     };
     private static final int REQUEST_CODE = 10; //number can be anything, this works just like a port
 
@@ -145,6 +156,25 @@ public class MainActivity extends Activity {
         return ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+    private boolean hasCoarseLocationPermission() {
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+    private boolean hasFineLocationPermission() {
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private boolean hasMediaPermission() {
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_MEDIA_IMAGES
         ) == PackageManager.PERMISSION_GRANTED;
     }
     private boolean hasReadPermission() {
@@ -157,6 +187,12 @@ public class MainActivity extends Activity {
         return ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+    private boolean hasNotificationPermission() {
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED;
     }
     private void requestPermission() {
